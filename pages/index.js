@@ -35,7 +35,7 @@ export default function Home() {
   const [layerList, setLayerList] = useState([layer])
   const [id, setId] = useState(0)
   const [dataPickerOpen, setDataPickerOpen] = useState(false)
-
+  const [layerColor, setLayerColor] = useState([10, 100, 40, 100])
   return (
     <div className={styles.container}>
       <Head>
@@ -47,12 +47,13 @@ export default function Home() {
       <main>
         <div style={{ display: 'flex', gap: '20px' }}>
           <div style={{ width: '20vw', height: '95vh' }}>
-            <Paper sx={{ height: '100%', py: 6, px: 2, display: 'flex', flexDirection: 'column'}}>
-              <Typography variant="h1" sx={{fontSize:'1rem',fontWeight:'500',marginBottom:2 }}>Attic</Typography>
-              <Divider orientation="horizontal" sx={{marginBottom:2}}/>
+            <Paper sx={{ height: '100%', py: 6, px: 2, display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h1" sx={{ fontSize: '1rem', fontWeight: '500', marginBottom: 2 }}>Attic</Typography>
+              <Divider orientation="horizontal" sx={{ marginBottom: 2 }} />
               <Typography variant='h4'>Layers</Typography>
               <Button sx={{ marginBottom: 2 }} variant="outlined" onClick={() => {
                 setDataPickerOpen(true)
+                console.log(layerList);
               }} >Add Layer</Button>
               <LayerList layerList={layerList} setLayerList={setLayerList} />
             </Paper>
@@ -60,10 +61,10 @@ export default function Home() {
           <Dialog open={dataPickerOpen} maxWidth={true}>
             <DialogTitle sx={{ display: 'flex', px: 2, justifyContent: 'space-between' }}>
               Add data to the map
-              <IconButton>
-                <CgClose size={20} onClick={() => {
-                  setDataPickerOpen(false)
-                }} />
+              <IconButton onClick={() => {
+                setDataPickerOpen(false)
+              }} >
+                <CgClose size={20} />
               </IconButton>
 
             </DialogTitle>
@@ -74,7 +75,23 @@ export default function Home() {
                 <GiWireframeGlobe size={64} />
                 <Typography variant="h6">Sample Data</Typography>
                 <Typography variant="subtitle1">Dont have any data? Try out our sanple data</Typography>
-                <Button variant="contained">Add</Button>
+                <Button variant="contained" onClick={() => {
+                      const alayer = new GeoJsonLayer({
+                        id: "outline",
+                        data:import("C:/Users/NOXTRIX/Documents/spatial/outline malawi.json"),
+                        filled: true,
+                        pointRadiusMinPixels: 2,
+                        pointRadiusScale: 2000,
+                        getPointRadius: f => 11 - f.properties.scalerank,
+                        getFillColor: layerColor,
+                        pickable: true,
+                        autoHighlight: true,
+                        getElevation: 30
+                      });
+                      setLayerList([...layerList, alayer])
+
+
+                }}>Add</Button>
               </Card >
               <Card variant='outlined' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', py: 2, px: 2 }}>
                 <GrTableAdd size={64} />
@@ -86,26 +103,26 @@ export default function Home() {
                   const AIR_PORTS =
                     'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
                   const alayer = new GeoJsonLayer({
-                    id:"airports",
-                    data:AIR_PORTS,
-                    filled:true,
-                    pointRadiusMinPixels:2,
-                    pointRadiusScale:2000,
-                    getPointRadius:f => 11 - f.properties.scalerank,
-                    getFillColor:[10, 100, 40, 100],
-                    pickable:true,
-                    autoHighlight:true,
+                    id: "airports",
+                    data: AIR_PORTS,
+                    filled: true,
+                    pointRadiusMinPixels: 2,
+                    pointRadiusScale: 2000,
+                    getPointRadius: f => 11 - f.properties.scalerank,
+                    getFillColor: layerColor,
+                    pickable: true,
+                    autoHighlight: true,
                     getElevation: 30
                   });
-                setLayerList([...layerList,alayer])
+                  setLayerList([...layerList, alayer])
                 }}>Add</Button>
-            </Card >
-          </DialogContent>
-        </Dialog>
-        <div className="my-container" style={{ height: '95vh', width: '70vw', position: 'relative' }}>
-          <MapComponent layerList={layerList} />
+              </Card >
+            </DialogContent>
+          </Dialog>
+          <div className="my-container" style={{ height: '95vh', width: '70vw', position: 'relative' }}>
+            <MapComponent layerList={layerList} />
+          </div>
         </div>
-    </div>
 
 
 

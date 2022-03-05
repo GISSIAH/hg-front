@@ -1,12 +1,12 @@
 import { Card, Container, Typography } from "@mui/material";
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { CirclePicker } from "react-color";
 import { CgClose } from "react-icons/cg";
 
 export default function LayerCard(props) {
-    const [color,setColor] = useState("")
+    //const [color,setColor] = useState("")
     const handleChangeComplete = (color) => {
-        setColor(color.rgb);
+        props.setColor(color.rgb);
       };
     return (
         <Card sx={{ px: 1, display: 'flex', flexDirection:'column',marginBottom:2, py:2 }} variant="outlined">
